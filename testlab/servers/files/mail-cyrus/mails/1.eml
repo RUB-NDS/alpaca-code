@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Server: Apache/1.3
+Content-type: text/html, text, plain
+Content-length: 78
+
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>
+      <script>alert(1);</script>
+    </p>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+X-Identity-Key: id1
+X-Account-Key: account1
+To: test
+From: test <bob@test>
+Subject: test
+Message-ID: <513fdb5e-6b6a-b208-8902-5dc0f6814e24@test>
+Date: Wed, 11 Sep 2019 10:27:01 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.0
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <p>
+      <script>alert(1);</script>
+    </p>
+  </body>
+</html>

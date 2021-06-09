@@ -1,0 +1,16 @@
+X-Mozilla-Keys:                                                                                 
+X-Mozilla-Keys:                                                                                 
+To: test
+From: test <bob@target.com>
+Subject: test
+Message-ID: <3a7aa2bf-8cc6-e671-72f8-0ad2cd79b989@target.com>
+Date: Thu, 15 Oct 2020 16:06:18 +0200
+X-Mozilla-Draft-Info: internal/draft; vcard=0; receipt=0; DSN=0; uuencode=0;
+ attachmentreminder=0; deliveryformat=4
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<script>alert(1);</script>

@@ -1,0 +1,106 @@
+version: "3"
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: alpaca-nginx-proxy
+    ports:
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./files/cert/:/etc/nginx/certs/:ro
+
+  nginx-target:
+    image: php:7.3-apache
+    container_name: alpaca-nginx-target
+    environment:
+      - VIRTUAL_HOST=target.com
+      - VIRTUAL_PORT=80
+    volumes:
+      - ./files/nginx-target/html/:/var/www/html/:ro
+
+  nginx-attacker:
+    image: nginx
+    container_name: alpaca-nginx-attacker
+    depends_on:
+      - nginx-proxy
+    environment:
+      - VIRTUAL_HOST=attacker.com
+    volumes:
+      - ./files/nginx-attacker/html/:/usr/share/nginx/html/:ro
+
+  vsftp:
+    image: alpaca-vsftp
+    build:
+      context: files/ftp-vsftp/
+    container_name: alpaca-vsftp
+    tty: true
+    volumes:
+      - ./files/cert/:/opt/certs/:ro
+      - ./files/ftp-vsftp/payload.html:/home/vsftpd/bob/payload.html
+    ports:
+      - 0.0.0.0:20:20
+      - 0.0.0.0:21:21
+      - 0.0.0.0:10090-10100:10090-10100
+    environment:
+      - FTP_USER=bob
+      - FTP_PASS=12345
+      - PASV_MIN_PORT=10090
+      - PASV_MAX_PORT=10100
+      - REVERSE_LOOKUP_ENABLE=NO
+
+  cyrus:
+    image: alpaca-cyrus-imap
+    build:
+      context: files/mail-cyrus/
+    container_name: alpaca-cyrus
+    tty: true
+    ports:
+      - "0.0.0.0:143:143"
+      - "0.0.0.0:993:993"
+    volumes:
+      - ./files/mail-cyrus/imapd.conf:/etc/imapd.conf
+      - ./files/mail-cyrus/cyrus.conf:/etc/cyrus.conf
+      - ./files/cert/:/tmp/ssl/
+
+  proftpd:
+    image: alpaca-proftpd
+    build:
+      context: ./files/ftp-proftpd/
+    container_name: alpaca-proftpd
+    restart: unless-stopped
+    tty: true
+    environment:
+      FTP_LIST: "bob:12345"
+      USERADD_OPTIONS: "-o --gid 33 --uid 33"
+    volumes:
+      - "./files/ftp-proftpd/bob:/home/bob"
+      - "./files/cert/:/opt/ssl/"
+    ports:
+      - 0.0.0.0:20:20
+      - 0.0.0.0:21:21
+      - 0.0.0.0:10101-10200:10101-10200
+
+  courier:
+    image: alpaca-courier
+    build:
+      context: ./files/mail-courier/
+    container_name: alpaca-courier
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:110:110"
+      - "0.0.0.0:143:143"
+    volumes:
+      - "./files/cert/:/opt/ssl/"
+    tty: true
+
+  sendmail:
+    image: alpaca-sendmail
+    build:
+      context: files/mail-sendmail/
+    container_name: alpaca-sendmail
+    tty: true
+    ports:
+      - "0.0.0.0:25:25"
+    volumes:
+      - ./files/cert/:/tmp/certs/

