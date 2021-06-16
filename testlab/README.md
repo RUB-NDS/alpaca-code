@@ -9,21 +9,26 @@ All code provided is experimental and may harm your system. Please use a fresh u
 
 **1. PLEASE USE A FRESH UBUNTU!**
 
-2. Install docker as described on https://docs.docker.com/engine/install/ubuntu/
+**2. Become root on the Maschine**
+```
+sudo -i
+```
 
-3. Install python3 and docker-compose
+3. Install docker as described on https://docs.docker.com/engine/install/ubuntu/
+
+4. Install python3 and docker-compose
 ```
 apt-get install python3 python3-pip
 pip3 install docker-compose
 ```
 
-4. Run ```./setup.sh```
+5. Run ```./setup.sh```
 ```
 chmod +x setup.sh
 ./setup.sh
 ```
 
-5. Add ./pki/ca.crt to your Firefox trusted CAs
+6. Add ./pki/ca.crt to your Firefox trusted CAs
 
 The setup is now completed and can be used.
 
