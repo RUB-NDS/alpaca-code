@@ -29,8 +29,7 @@ fi
 echo -e "${GREEN}Installing dependencies${NC}"
 
 if [ "$OS" = "Darwin" ]; then
-     echo brew
-#    brew install easy-rsa
+   brew install easy-rsa
 else
    apt-get install -y easy-rsa
 fi
