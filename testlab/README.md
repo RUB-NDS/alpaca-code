@@ -14,22 +14,26 @@ All code provided is experimental and may harm your system. Please use a fresh u
 sudo -i
 ```
 
-3. Install docker as described on https://docs.docker.com/engine/install/ubuntu/
+**3. Install docker as described on https://docs.docker.com/engine/install/ubuntu/**
 
-4. Install python3 and docker-compose
+**4. Install python3 and docker-compose**
 ```
 apt-get install python3 python3-pip
 pip3 install docker-compose
 ```
 
-5. Run ```./setup.sh```
+**5. Run ```./setup.sh```**
 ```
 chmod +x setup.sh
 ./setup.sh
 ```
 
-6. Add ./pki/ca.crt to your Firefox trusted CAs
-
+**6. Add ./pki/ca.crt to your Firefox trusted CAs**
+You have to copy the file to your user directory and add permissions for your user if firefox does not run as root
+```
+cp ./pki/ca.crt /home/<USER>/
+chmod 775 /home/<USER>/ca.crt
+```
 The setup is now completed and can be used.
 
 Important: If you reboot after the setup, you have to manually add a second IP to loopback:
