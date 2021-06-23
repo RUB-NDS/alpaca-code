@@ -1,4 +1,4 @@
-IR="`pwd`/`dirname "$0"`/"
+DIR="`pwd`/`dirname "$0"`/"
 GREEN="\033[0;32m"
 NC="\033[0m"
 
@@ -21,9 +21,9 @@ docker-compose -f servers/docker-compose.yml pull -q 2> /dev/null
 
 echo -e "${GREEN}Adding additional loopback IP${NC}"
 if [ "$OS" = "Darwin" ]; then
-   ifconfig lo0 alias 172.0.0.2/8 up
+   ifconfig lo0 alias 127.0.0.2/8 up
 else
-   ip addr add 172.0.0.2/8 dev lo
+   ip addr add 127.0.0.2/8 dev lo
 fi
 
 echo -e "${GREEN}Installing dependencies${NC}"
@@ -66,14 +66,15 @@ else
    DIR_MAC=${DIR}
 fi
 
-cp "$DIR_MAC/pki/issued/attacker.com.crt" "$DIR/servers/files/cert"
-cp "$DIR_MAC/pki/private/attacker.com.key" "$DIR/servers/files/cert"
+mkdir -p "$DIR/servers/files/cert/" 2> /dev/null
+cp "$DIR_MAC/pki/issued/attacker.com.crt" "$DIR/servers/files/cert/"
+cp "$DIR_MAC/pki/private/attacker.com.key" "$DIR/servers/files/cert/"
 
 ${path}easyrsa --req-cn="target.com" gen-req target.com nopass
 ${path}easyrsa sign-req server target.com
 
-cp "$DIR_MAC/pki/issued/target.com.crt" "$DIR/servers/files/cert"
-cp "$DIR_MAC/pki/private/target.com.key" "$DIR/servers/files/cert"
+cp "$DIR_MAC/pki/issued/target.com.crt" "$DIR/servers/files/cert/"
+cp "$DIR_MAC/pki/private/target.com.key" "$DIR/servers/files/cert/"
 
 if ! grep ALPACA /etc/hosts; then
    echo -e "${GREEN}[HOST] Alter host file${NC}"
