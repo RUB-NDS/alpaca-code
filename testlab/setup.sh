@@ -42,7 +42,7 @@ fi
 echo -e "${GREEN}[CERT] Creating PKI${NC}"
 ${path}easyrsa init-pki --pki-dir = "$DIR/pki"
 cat << EOF > "$DIR/pki/vars"
-et_var EASYRSA_DN     "cn_only"
+set_var EASYRSA_DN     "cn_only"
 set_var EASYRSA_DIGEST "sha512"
 set_var EASYRSA_BATCH    "1"
 set_var EASYRSA_REQ_CN "alpaca.poc"
