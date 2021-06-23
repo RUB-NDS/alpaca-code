@@ -34,7 +34,7 @@ The setup is now completed and can be used.
 
 Important: If you reboot after the setup, you have to manually add a second IP to loopback:
 ```
-ip addr add 172.0.0.2/8 dev lo
+ip addr add 127.0.0.2/8 dev lo
 ```
 ## FTPS
 
