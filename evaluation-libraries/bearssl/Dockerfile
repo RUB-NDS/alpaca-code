@@ -19,6 +19,7 @@ ADD CMakeLists.txt /build/CMakeLists.txt
 
 # generate c code from private keys and certs
 RUN ls /build/server/
+RUN /build/BearSSL/build/brssl ta /etc/ssl/cert-data/ca.crt | tail -n +2 >> /build/client/client.h
 RUN /build/BearSSL/build/brssl chain /etc/ssl/cert-data/tls-server.com-chain.crt | tail -n +2 >> /build/server/server.h
 RUN /build/BearSSL/build/brssl skey -C /etc/ssl/cert-data/tls-server.com.key | tail -n +2 >> /build/server/server.h
 
