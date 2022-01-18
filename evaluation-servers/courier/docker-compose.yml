@@ -1,0 +1,13 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  courier: 
+    image: tls-courier
+  scanner:
+    image: tlsscanner
+    depends_on:
+    - courier
+    command: [ "-connect", "courier:993", "-server_name", "tls-server.com", "-scanDetail", "QUICK"]

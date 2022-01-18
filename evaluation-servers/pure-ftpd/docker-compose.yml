@@ -1,0 +1,13 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  pureftpd: 
+    image: tls-pureftpd
+  scanner:
+    image: tlsscanner
+    depends_on:
+    - pureftpd
+    command: [ "-connect", "pureftpd:21", "-server_name", "tls-server.com", "-starttls", "ftp", "-scanDetail", "QUICK"]

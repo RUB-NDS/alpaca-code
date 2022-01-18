@@ -1,0 +1,13 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  dovecot: 
+    image: tls-dovecot
+  scanner:
+    image: tlsscanner
+    depends_on:
+    - dovecot
+    command: [ "-connect", "dovecot:993", "-server_name", "tls-server.com", "-scanDetail", "QUICK"]

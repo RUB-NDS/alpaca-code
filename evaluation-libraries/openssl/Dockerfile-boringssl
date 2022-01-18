@@ -1,0 +1,21 @@
+# syntax=docker/dockerfile:1
+FROM tls-baseimage as tls-boringssl
+ARG VERSION=3945
+RUN git clone --depth=1 https://boringssl.googlesource.com/boringssl
+#RUN git clone --depth=1 -b ${VERSION} https://boringssl.googlesource.com/boringssl
+WORKDIR /src/boringssl
+RUN cmake .  && make
+RUN mv crypto/libcrypto.a /lib/libcrypto.a
+RUN mv ssl/libssl.a /lib/libssl.a
+RUN mv include/* /usr/include/
+
+WORKDIR /build
+ADD server /build/server
+ADD client /build/client
+ADD CMakeLists.txt /build/CMakeLists.txt
+RUN cmake . .. && make
+RUN mv /build/server/server /
+RUN mv /build/client/client /
+COPY --from=tls-openssl /openssl-client /openssl-client
+WORKDIR /
+CMD ["/server"]

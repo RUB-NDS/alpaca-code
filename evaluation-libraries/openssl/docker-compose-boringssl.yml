@@ -1,0 +1,36 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  openssl-server-wrong-cn:
+    image: tls-openssl
+    command:
+      [
+        "/openssl-server",
+        "-k",
+        "/etc/ssl/cert-data/wrong-cn.com.key",
+        "-c",
+        "/etc/ssl/cert-data/wrong-cn.com-chain.crt",
+      ]
+  openssl-malicious-alpn:
+    image: tls-openssl
+    command: ["/openssl-server", "-m"]
+  boringssl-server:
+    image: tls-boringssl
+  boringssl-client:
+    image: tls-boringssl
+    depends_on:
+      - boringssl-server
+      - openssl-server-wrong-cn
+      - openssl-malicious-alpn
+    command:
+      [
+        "/client.sh",
+        "/client",
+        "boringssl-server",
+        "openssl-server-wrong-cn",
+        "openssl-malicious-alpn",
+        "6",
+      ]

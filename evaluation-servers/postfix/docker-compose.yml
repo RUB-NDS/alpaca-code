@@ -1,0 +1,13 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  postfix: 
+    image: tls-postfix
+  scanner:
+    image: tlsscanner
+    depends_on:
+      - postfix
+    command: [ "-connect", "postfix:465", "-server_name", "tls-server.com",  "-starttls", "SMTP", "-scanDetail", "QUICK"]

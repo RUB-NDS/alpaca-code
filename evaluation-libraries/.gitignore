@@ -1,0 +1,4 @@
+*.vscode
+build/
+java/client/bin/Client.class
+java/server/bin/Server.class

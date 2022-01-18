@@ -1,0 +1,1 @@
+docker build --build-arg VERSION=4.8.1-stable . -t tls-wolfssl -f Dockerfile

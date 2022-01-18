@@ -1,0 +1,21 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  wolfssl-server: 
+    image: tls-wolfssl
+  openssl-server-wrong-cn: 
+    image: tls-openssl
+    command: [ "/openssl-server", "-k", "/etc/ssl/cert-data/wrong-cn.com.key", "-c" , "/etc/ssl/cert-data/wrong-cn.com-chain.crt"]
+  openssl-malicious-alpn: 
+    image: tls-openssl
+    command: [ "/openssl-server", "-m"]
+  wolfssl-client: 
+    image: tls-wolfssl
+    command: [ "./client.sh", "/client", "wolfssl-server", "openssl-server-wrong-cn", "openssl-malicious-alpn" ,"1"]
+    depends_on: 
+      - wolfssl-server
+      - openssl-server-wrong-cn
+      - openssl-malicious-alpn

@@ -1,0 +1,331 @@
+##VERSION: $Id: f6b3b133f021939f6a08728c42dd07a35cf2c8fc-20210515145926$
+#
+# imapd-ssl created from imapd-ssl.dist by sysconftool
+#
+# Do not alter lines that begin with ##, they are used when upgrading
+# this configuration.
+#
+#  Copyright 2000 - 2021 Double Precision, Inc.  See COPYING for
+#  distribution information.
+#
+#  This configuration file sets various options for the Courier-IMAP server
+#  when used to handle SSL IMAP connections.
+#
+#  SSL and non-SSL connections are handled by a dedicated instance of the
+#  couriertcpd daemon.  If you are accepting both SSL and non-SSL IMAP
+#  connections, you will start two instances of couriertcpd, one on the
+#  IMAP port 143, and another one on the IMAP-SSL port 993.
+#
+#  Download OpenSSL from http://www.openssl.org/
+#
+##NAME: SSLPORT:1
+#
+#  Options in the imapd-ssl configuration file AUGMENT the options in the
+#  imapd configuration file.  First the imapd configuration file is read,
+#  then the imapd-ssl configuration file, so we do not have to redefine
+#  anything.
+#
+#  However, some things do have to be redefined.  The port number is
+#  specified by SSLPORT, instead of PORT.  The default port is port 993.
+#
+#  Multiple port numbers can be separated by commas.  When multiple port
+#  numbers are used it is possibly to select a specific IP address for a
+#  given port as "ip.port".  For example, "127.0.0.1.900,192.168.0.1.900"
+#  accepts connections on port 900 on IP addresses 127.0.0.1 and 192.168.0.1
+#  The SSLADDRESS setting is a default for ports that do not have
+#  a specified IP address.
+
+SSLPORT=993
+
+##NAME: SSLADDRESS:0
+#
+#  Address to listen on, can be set to a single IP address.
+#
+# SSLADDRESS=127.0.0.1
+
+SSLADDRESS=0
+
+##NAME: SSLPIDFILE:0
+#
+# That's the SSL IMAP port we'll listen on.
+# Feel free to redefine MAXDAEMONS, TCPDOPTS, and MAXPERIP.
+
+SSLPIDFILE=/run/courier/imapd-ssl.pid
+
+##NAME: SSLLOGGEROPTS:0
+#
+# courierlogger(1) options.
+#
+
+SSLLOGGEROPTS="-name=imapd-ssl"
+
+##NAME: IMAPDSSLSTART:0
+#
+# Different pid files, so that both instances of couriertcpd can coexist
+# happily.
+#
+# You can also redefine IMAP_CAPABILITY, although I can't
+# think of why you'd want to do that.
+#
+#
+# Ok, the following settings are new to imapd-ssl:
+#
+#  Whether or not to start IMAP over SSL on simap port:
+
+IMAPDSSLSTART=NO
+
+##NAME: IMAPDSTARTTLS:0
+#
+#  Whether or not to implement IMAP STARTTLS extension instead:
+
+IMAPDSTARTTLS=YES
+
+##NAME: IMAP_TLS_REQUIRED:1
+#
+# Set IMAP_TLS_REQUIRED to 1 if you REQUIRE STARTTLS for everyone.
+# (this option advertises the LOGINDISABLED IMAP capability, until STARTTLS
+# is issued).
+
+IMAP_TLS_REQUIRED=1
+
+
+#########################################################################
+#
+# The following variables configure IMAP over SSL.  If OpenSSL or GnuTLS
+# is available during configuration, the couriertls helper gets compiled, and
+# upon installation a dummy TLS_CERTFILE gets generated.
+#
+# WARNING: Peer certificate verification has NOT yet been tested.  Proceed
+# at your own risk.  Only the basic SSL/TLS functionality is known to be
+# working. Keep this in mind as you play with the following variables.
+#
+##NAME: COURIERTLS:0
+#
+
+COURIERTLS=/usr/bin/couriertls
+
+##NAME: TLS_PRIORITY:0
+#
+# GnuTLS setting only (use TLS_CIPHER_LIST for OpenSSL)
+#
+# Set TLS protocol priority settings
+#
+# DEFAULT: NORMAL:-CTYPE-OPENPGP
+#
+# This setting is also used to select the available ciphers.
+#
+# The actual list of available ciphers depend on the options GnuTLS was
+# compiled against. The possible ciphers are:
+#
+# AES256, 3DES, AES128, ARC128, ARC40, RC2, DES, NULL
+#
+# Also, the following aliases:
+#
+# HIGH -- all ciphers that use more than a 128 bit key size
+# MEDIUM -- all ciphers that use a 128 bit key size
+# LOW -- all ciphers that use fewer than a 128 bit key size, the NULL cipher
+#        is not included
+# ALL -- all ciphers except the NULL cipher
+#
+TLS_PRIORITY="NORMAL:-VERS-SSL3.0:-VERS-TLS1.0:-VERS-TLS1.1:+VERS-TLS1.2"
+# See GnuTLS documentation, gnutls_priority_init(3) for additional
+# documentation.
+
+##NAME: TLS_PROTOCOL:0
+#
+# TLS_PROTOCOL sets the protocol version.  The possible versions are:
+#
+# OpenSSL:
+#
+# TLSv1 - TLS 1.0, or higher.
+# TLSv1.1 - TLS1.1, or higher.
+# TLSv1.1++ TLS1.1, or higher, without client-initiated renegotiation.
+# TLSv1.2 - TLS1.2, or higher.
+# TLSv1.2++ TLS1.2, or higher, without client-initiated renegotiation.
+#
+# The default value is TLSv1
+
+##NAME: TLS_CIPHER_LIST:0
+#
+# OpenSSL only (use TLS_PRIORITY for GnuTLS):
+#
+# TLS_CIPHER_LIST optionally sets the list of ciphers to be used by the
+# OpenSSL library.  In most situations you can leave TLS_CIPHER_LIST
+# undefined
+#
+# TLS_CIPHER_LIST="TLSv1:HIGH:!LOW:!MEDIUM:!EXP:!NULL:!aNULL@STRENGTH"
+#
+# See the OpenSSL ciphers(1) manual page for the format of this setting.
+
+##NAME: TLS_STARTTLS_PROTOCOL:0
+#
+# TLS_STARTTLS_PROTOCOL is used instead of TLS_PROTOCOL for the IMAP STARTTLS
+# extension, as opposed to IMAP over SSL on port 993.
+#
+# It takes the same values for OpenSSL as TLS_PROTOCOL
+TLS_PROTOCOL="TLSv1.2"
+TLS_STARTTLS_PROTOCOL="TLSv1.2"
+
+##NAME: TLS_MIN_DH_BITS:0
+#
+# TLS_MIN_DH_BITS=n
+#
+# GnuTLS only:
+#
+# Set the minimum number of acceptable bits for a DH key exchange.
+#
+# GnuTLS's compiled-in default is 727 bits (as of GnuTLS 1.6.3). Some server
+# have been encountered that offer 512 bit keys. You may have to set
+# TLS_MIN_DH_BITS=512 here, if necessary.
+
+##NAME: TLS_TIMEOUT:0
+# TLS_TIMEOUT is currently not implemented, and reserved for future use.
+# This is supposed to be an inactivity timeout, but its not yet implemented.
+#
+
+##NAME: TLS_CERTFILE:0
+#
+# TLS_CERTFILE - certificate to use. TLS_CERTFILE must be owned
+# by the "courier" user, and must not be world-readable.
+#
+# VIRTUAL HOSTS ON THE SAME IP ADDRESS.
+#
+# Install each certificate $TLS_CERTFILE.domain, so if TLS_CERTFILE is set to
+# /etc/certificate.pem, then you'll need to install the actual certificate
+# files as /etc/certificate.pem.www.example.com,
+# /etc/certificate.pem.www.domain.com and so on. Then, create a link from
+# $TLS_CERTFILE to whichever certificate you consider to be the main one,
+# for example:
+# /etc/certificate.pem => /etc/certificate.pem.www.example.com
+#
+# IP-BASED VIRTUAL HOSTS:
+#
+# There may be a need to support older SSL/TLS client that don't support
+# virtual hosts on the same IP address, and require a dedicated IP address
+# for each SSL/TLS host. If so, install each certificate file as
+# $TLS_CERTFILE.aaa.bbb.ccc.ddd, where "aaa.bbb.ccc.ddd" is the IP address
+# for the certificate's domain name. So, if TLS_CERTFILE is set to
+# /etc/certificate.pem, then you'll need to install the actual certificate
+# files as /etc/certificate.pem.192.168.0.2, /etc/certificate.pem.192.168.0.3
+# and so on, for each IP address.
+#
+# In all cases, $TLS_CERTFILE needs to be linked to one of the existing
+# certificate files.
+
+TLS_CERTFILE=/etc/ssl/cert-data/tls-server-chain.crt
+
+##NAME: TLS_PRIVATE_KEYFILE:0
+#
+# TLS_PRIVATE_KEYFILE - SSL/TLS private key for decrypting peer data.
+# This file must be owned by the "courier" user, and must not be world
+# readable, and must be accessible without a pass-phrase, i.e. it must not
+# be encrypted.
+#
+# By default, courier generates SSL/TLS certifice including private key
+# and install it in TLS_CERTFILE path, so TLS_PRIVATE_KEYFILE is completely
+# optional. If TLS_PRIVATE_KEYFILE is not set (default), TLS_CERTFILE is
+# treated as certificate including private key file.
+#
+# If you get SSL/TLS certificate and private key from trusted certificate
+# authority(CA) and want to install them separately, TLS_PRIVATE_KEYFILE can
+# be used as private key file path setting.
+#
+# VIRTUAL HOSTS ON THE SAME IP ADDRESS.
+#
+# $TLS_PRIVATE_KEYFILE.domain and $TLS_CERTFILE.domain are a pair.
+# If you use VIRTUAL HOST feature on TLS_CERTFILE setting, you must set pair
+# private key as $TLS_PRIVATE_KEYFILE.domain. Then, create a link from
+# $TLS_PRIVATE_KEYFILE to whichever private key you consider to be the main one.
+# for example:
+# /etc/tls_private_keyfile.pem => /etc/tls_private_keyfile.pem.www.example.com
+#
+# IP-BASED VIRTUAL HOSTS:
+#
+# Just described on "VIRTUAL HOSTS ON THE SAME IP ADDRESS" above,
+# $TLS_PRIVATE_KEYFILE.aaa.bbb.ccc.ddd and $TLS_CERTFILE.aaa.bbb.ccc.ddd are
+# a pair. If TLS_PRIVATE_KEYFILE is set to /etc/tls_private_keyfile.pem,
+# then you'll need to install the actual certificate files as
+# /etc/tls_private_keyfile.pem.192.168.0.2, /etc/tls_private_keyfile.192.168.0.3
+# and so on, for each IP address.
+#
+# In all cases, $TLS_PRIVATE_KEYFILE needs to be linked to one of the existing
+# certificate files.
+#
+TLS_PRIVATE_KEYFILE=/etc/ssl/cert-data/tls-server.key
+
+##NAME: TLS_DHPARAMS:0
+#
+# TLS_DHPARAMS - DH parameter file.
+#
+TLS_DHPARAMS=/usr/share/dhparams.pem
+
+##NAME: TLS_TRUSTCERTS:0
+#
+# TLS_TRUSTCERTS=pathname - load trusted certificates from pathname.
+# pathname can be a file or a directory. If a file, the file should
+# contain a list of trusted certificates, in PEM format. If a
+# directory, the directory should contain the trusted certificates,
+# in PEM format, one per file and hashed using OpenSSL's c_rehash
+# script. TLS_TRUSTCERTS is used by SSL/TLS clients (by specifying
+# the -domain option) and by SSL/TLS servers (TLS_VERIFYPEER is set
+# to PEER or REQUIREPEER).
+#
+
+TLS_TRUSTCERTS=/etc/ssl/certs/
+
+##NAME: TLS_VERIFYPEER:0
+#
+# TLS_VERIFYPEER - how to verify client certificates.  The possible values of
+# this setting are:
+#
+# NONE - do not verify anything
+#
+# PEER - verify the client certificate, if one's presented
+#
+# REQUIREPEER - require a client certificate, fail if one's not presented
+#
+#
+TLS_VERIFYPEER=NONE
+
+##NAME: TLS_EXTERNAL:0
+#
+# To enable SSL certificate-based authentication:
+#
+# 1) TLS_TRUSTCERTS must be set to a pathname that holds your certificate
+#    authority's SSL certificate
+#
+# 2) TLS_VERIFYPEER=PEER or TLS_VERIFYPEER=REQUIREPEER (the later settings
+#    requires all SSL clients to present a certificate, and rejects
+#    SSL/TLS connections without a valid cert).
+#
+# 3) Set TLS_EXTERNAL, below, to the subject field that holds the login ID.
+#    Example:
+#
+#  TLS_EXTERNAL=emailaddress
+#
+# The above example retrieves the login ID from the "emailaddress" subject
+# field. The certificate's emailaddress subject must match exactly the login
+# ID in the courier-authlib database.
+
+##NAME: TLS_CACHE:1
+#
+# A TLS/SSL session cache may slightly improve response for IMAP clients
+# that open multiple SSL sessions to the server.  TLS_CACHEFILE will be
+# automatically created, TLS_CACHESIZE bytes long, and used as a cache
+# buffer.
+
+TLS_CACHEFILE=/var/spool/courier/couriersslimapcache
+TLS_CACHESIZE=524288
+
+##NAME: TLS_ALPN:0
+#
+# Application level protocol negotiation should be enabled by default, and
+# should be commented out only in case of compatibility issues.
+
+TLS_ALPN=imap
+
+##NAME: MAILDIRPATH:0
+#
+# MAILDIRPATH - directory name of the maildir directory.
+#
+MAILDIRPATH=Maildir

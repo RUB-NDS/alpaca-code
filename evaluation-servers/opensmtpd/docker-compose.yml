@@ -1,0 +1,13 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  opensmtpd: 
+    image: tls-opensmtpd
+  scanner:
+    image: tlsscanner
+    depends_on:
+    - opensmtpd
+    command: [ "-connect", "opensmtpd:465", "-server_name", "tls-server.com", "-scanDetail", "QUICK"]

@@ -1,0 +1,21 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  bearssl-server: 
+    image: tls-bearssl
+  openssl-server-wrong-cn: 
+    image: tls-openssl
+    command: [ "/openssl-server", "-k", "/etc/ssl/cert-data/wrong-cn.com.key", "-c" , "/etc/ssl/cert-data/wrong-cn.com-chain.crt"]
+  openssl-malicious-alpn: 
+    image: tls-openssl
+    command: [ "/openssl-server", "-m"]
+  bearssl-client: 
+    image: tls-bearssl
+    command: [ "./client.sh", "/client", "bearssl-server", "openssl-server-wrong-cn", "openssl-malicious-alpn" ,"1"]
+    depends_on: 
+      - bearssl-server
+      - openssl-server-wrong-cn
+      - openssl-malicious-alpn

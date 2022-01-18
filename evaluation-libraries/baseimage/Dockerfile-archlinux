@@ -1,0 +1,17 @@
+FROM archlinux:base-devel
+RUN pacman-key --init
+RUN pacman-key --populate archlinux
+RUN pacman -Syu --noconfirm
+RUN pacman -S git --noconfirm
+
+#create build user that has root access because archlinux doesn't allow makepkg to be run as root
+RUN useradd --no-create-home --shell=/bin/false build && usermod -L build
+RUN echo "build ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+COPY ./certs/ca.crt /etc/ssl/certs/
+COPY ./certs /etc/ssl/cert-data
+COPY client.sh /client.sh
+RUN mkdir /src
+WORKDIR /src/
+RUN chown build /src
