@@ -1,0 +1,13 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  cyrus: 
+    image: tls-cyrus
+  scanner:
+    image: tlsscanner
+    depends_on:
+    - cyrus
+    command: [ "-connect", "cyrus:993", "-server_name", "tls-server.com", "-scanDetail", "QUICK"]

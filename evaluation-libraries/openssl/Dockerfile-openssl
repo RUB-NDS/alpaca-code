@@ -1,0 +1,26 @@
+# syntax=docker/dockerfile:1
+FROM tls-baseimage as tls-openssl
+#ARG VERSION=1_1_1
+#RUN git clone --depth=1 -b OpenSSL_${VERSION}-stable https://github.com/openssl/openssl
+RUN git clone --depth=1 -b openssl-3.0 https://github.com/openssl/openssl
+WORKDIR /src/openssl
+RUN ./config  no-async 
+RUN make 
+RUN make install
+RUN cp libcrypto.a /lib/libcrypto.a
+RUN cp libssl.a /lib/libssl.a
+RUN cp -r -L include/* /usr/include/
+
+WORKDIR /build
+ADD server /build/server
+ADD client /build/client
+ADD CMakeLists.txt /build/CMakeLists.txt
+RUN cmake . .. && make
+RUN mv /build/server/server /openssl-server
+RUN mv /build/client/client /openssl-client
+RUN rm -r /build/*
+RUN rm -r /usr/include/openssl
+RUN rm /lib/libcrypto.a
+RUN rm /lib/libssl.a
+WORKDIR /
+CMD ["/openssl-server"]

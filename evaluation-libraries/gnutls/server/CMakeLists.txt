@@ -1,0 +1,9 @@
+cmake_minimum_required(VERSION 3.0.0)
+project(alpaca-gnutls-server VERSION 0.1.0)
+
+find_package(GnuTLS REQUIRED)
+include_directories(SYSTEM ${GNUTLS_INCLUDE_DIR})
+
+add_executable(server server.c)
+target_link_libraries(server ${GNUTLS_LIBRARIES})
+target_compile_options(server PRIVATE -Wall -Wextra)

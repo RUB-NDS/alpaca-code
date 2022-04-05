@@ -1,0 +1,21 @@
+version: "3"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  golang-server:
+    image: tls-golang
+  openssl-server-wrong-cn: 
+    image: tls-openssl
+    command: [ "/openssl-server", "-k", "/etc/ssl/cert-data/wrong-cn.com.key", "-c" , "/etc/ssl/cert-data/wrong-cn.com-chain.crt"]
+  openssl-malicious-alpn: 
+    image: tls-openssl
+    command: [ "/openssl-server", "-m"]
+  golang-client:
+    image: tls-golang
+    depends_on:
+      - golang-server
+      - openssl-server-wrong-cn
+      - openssl-malicious-alpn
+    command: [ "/client.sh", "/client", "golang-server", "openssl-server-wrong-cn", "openssl-malicious-alpn" ,"1"]

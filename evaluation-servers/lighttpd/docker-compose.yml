@@ -1,0 +1,20 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  lighttpd-openssl: 
+    image: tls-lighttpd-openssl
+  lighttpd-mbedtls: 
+    image: tls-lighttpd-mbedtls
+  scanner:
+    image: tlsscanner
+    depends_on:
+    - lighttpd-openssl
+    command: [ "-connect", "lighttpd-openssl:443", "-server_name", "tls-server.com", "-scanDetail", "QUICK" ]
+  scanner2:
+    image: tlsscanner
+    depends_on:
+    - lighttpd-mbedtls
+    command: [ "-connect", "lighttpd-mbedtls:443", "-server_name", "tls-server.com", "-scanDetail", "QUICK" ]

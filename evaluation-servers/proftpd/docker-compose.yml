@@ -1,0 +1,13 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  tls-server.com: 
+    image: tls-proftpd
+  scanner:
+    image: tlsscanner
+    depends_on:
+    - tls-server.com
+    command: [ "-connect", "tls-server.com:21", "-server_name", "tls-server.com", "-starttls", "ftp", "-scanDetail", "QUICK"]

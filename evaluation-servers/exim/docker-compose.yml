@@ -1,0 +1,14 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  exim: 
+    image: tls-exim
+    hostname: tls-exim
+  scanner:
+    image: tlsscanner
+    depends_on:
+    - exim
+    command: [ "-connect", "exim:465", "-server_name", "tls-server.com", "-scanDetail", "QUICK"]

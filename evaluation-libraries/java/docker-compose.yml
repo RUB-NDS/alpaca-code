@@ -1,0 +1,21 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  java-server: 
+    image: tls-java
+  openssl-server-wrong-cn: 
+    image: tls-openssl
+    command: [ "/openssl-server", "-k", "/etc/ssl/cert-data/wrong-cn.com.key", "-c" , "/etc/ssl/cert-data/wrong-cn.com-chain.crt"]
+  openssl-malicious-alpn: 
+    image: tls-openssl
+    command: [ "/openssl-server", "-m"]
+  java-client: 
+    image: tls-java
+    command: [ "/client.sh", "java -Djavax.net.ssl.trustStore=certs/ca.crt -jar /client/bin/Client.jar", "java-server", "openssl-server-wrong-cn", "openssl-malicious-alpn" ,"1"]
+    depends_on: 
+      - java-server
+      - openssl-server-wrong-cn
+      - openssl-malicious-alpn

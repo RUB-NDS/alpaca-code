@@ -1,0 +1,21 @@
+[package]
+name = "alpaca-rustls"
+version = "0.0.1"
+edition = "2018"
+description = "Rustls example."
+publish = false
+
+[dependencies]
+rustls = "0.20.0"
+rustls-pemfile = "0.2.0"
+clap = "~2.27.0"
+mio = { version = "0.7", features = ["os-poll", "tcp"] }
+
+
+[[bin]]
+name = "server"
+path = "server/server.rs"
+
+[[bin]]
+name = "client"
+path = "client/client.rs"

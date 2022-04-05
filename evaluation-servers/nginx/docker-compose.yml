@@ -1,0 +1,13 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  nginx: 
+    image: tls-nginx
+  scanner:
+    image: tlsscanner
+    depends_on:
+      - nginx
+    command: [ "-connect", "nginx:4433", "-server_name", "tls-server.com", "-scanDetail", "QUICK"]

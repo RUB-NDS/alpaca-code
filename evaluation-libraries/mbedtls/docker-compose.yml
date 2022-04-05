@@ -1,0 +1,21 @@
+version: "3.9"
+networks:
+  default:
+    name: tls-network
+    internal: true
+services:
+  mbedtls-server: 
+    image: tls-mbedtls
+  openssl-server-wrong-cn: 
+    image: tls-openssl
+    command: [ "/openssl-server", "-k", "/etc/ssl/cert-data/wrong-cn.com.key", "-c" , "/etc/ssl/cert-data/wrong-cn.com-chain.crt"]
+  openssl-malicious-alpn: 
+    image: tls-openssl
+    command: [ "/openssl-server", "-m"]
+  mbedtls-client: 
+    image: tls-mbedtls
+    command: [ "./client.sh", "/client", "mbedtls-server", "openssl-server-wrong-cn", "openssl-malicious-alpn" ,"1"]
+    depends_on: 
+      - mbedtls-server
+      - openssl-server-wrong-cn
+      - openssl-malicious-alpn

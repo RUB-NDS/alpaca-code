@@ -1,0 +1,1 @@
+docker build --build-arg VERSION=0.20.0 . -t tls-rustls -f Dockerfile

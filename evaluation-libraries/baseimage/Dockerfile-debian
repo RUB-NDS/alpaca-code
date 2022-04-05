@@ -1,0 +1,26 @@
+ARG VERSION=bullseye
+FROM debian:${VERSION}
+RUN apt-get update && apt-get install -y \
+    git \
+    cmake \
+    make \
+    wget \
+    bash \
+    autoconf \
+    automake \
+    coreutils \
+    patch \
+    gperf \
+    pkgconf \
+    libtool \
+    g++ \
+    gcc \
+    perl \
+    python3 \
+    golang
+COPY ./certs/ca.crt /etc/ssl/certs/
+COPY ./certs /etc/ssl/cert-data
+COPY client.sh /client.sh
+RUN mkdir /src
+RUN mkdir /build
+WORKDIR /src/
